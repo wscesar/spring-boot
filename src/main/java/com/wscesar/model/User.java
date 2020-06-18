@@ -21,7 +21,7 @@ public class User {
     this.age = age;
   }
 
-  public UUID getUuid() {
+  public UUID getId() {
     return uuid;
   }
 

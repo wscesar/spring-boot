@@ -8,7 +8,9 @@ public interface UserDao {
 
   List<User> getAllUsers();
 
-  User getUser(UUID userUid);
+  User getUser(UUID userId);
+
+  int insertUser(UUID userId, User user);
 
   int updateUser(User user);
 

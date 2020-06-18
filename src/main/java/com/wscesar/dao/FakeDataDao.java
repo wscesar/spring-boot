@@ -27,13 +27,19 @@ public class FakeDataDao implements UserDao {
   }
 
   @Override
-  public User getUser(UUID userUid) {
-    return database.get(userUid);
+  public User getUser(UUID userId) {
+    return database.get(userId);
+  }
+
+  @Override
+  public int insertUser(UUID userId, User user) {
+    database.put(userId, user);
+    return 1;
   }
 
   @Override
   public int updateUser(User user) {
-    database.put(user.getUuid(), user);
+    database.put(user.getId(), user);
     return 1;
   }
 
