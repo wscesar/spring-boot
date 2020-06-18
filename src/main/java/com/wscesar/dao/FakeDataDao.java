@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
@@ -29,8 +30,8 @@ public class FakeDataDao implements UserDao {
   }
 
   @Override
-  public User getUser(UUID userId) {
-    return database.get(userId);
+  public Optional<User> getUser(UUID userId) {
+    return Optional.ofNullable(database.get(userId));
   }
 
   @Override

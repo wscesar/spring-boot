@@ -5,6 +5,7 @@ import com.wscesar.dao.UserDao;
 import com.wscesar.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,23 +21,38 @@ public class UserService {
   }
 
   public List<User> getAllUsers() {
-    return null;
+    return userDao.getAllUsers();
   }
 
-  public User getUser(UUID userId) {
-    return null;
+  public Optional<User> getUser(UUID userId) {
+    return userDao.getUser(userId);
   }
 
-  public int insertUser(UUID userId, User user) {
+  public int insertUser(User user) {
+    userDao.insertUser(UUID.randomUUID(), user);
     return 1;
   }
 
   public int updateUser(User user) {
-    return 1;
+    Optional<User> optionalUser = getUser(user.getId());
+
+    if (optionalUser.isPresent()) {
+      userDao.updateUser(user);
+      return 1;
+    }
+
+    return -1;
   }
 
-  public int removeUser(UUID userUid) {
-    return 1;
+  public int removeUser(UUID userId) {
+    Optional<User> optionalUser = getUser(userId);
+
+    if (optionalUser.isPresent()) {
+      userDao.removeUser(userId);
+      return 1;
+    }
+
+    return -1;
   }
 
 }
