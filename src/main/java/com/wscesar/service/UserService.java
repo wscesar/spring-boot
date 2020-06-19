@@ -36,8 +36,7 @@ public class UserService {
         Optional<User> optionalUser = getUser(user.getId());
 
         if (optionalUser.isPresent()) {
-            userDao.updateUser(user);
-            return 1;
+            return userDao.updateUser(user);
         }
 
         return -1;
@@ -47,8 +46,7 @@ public class UserService {
         Optional<User> optionalUser = getUser(userId);
 
         if (optionalUser.isPresent()) {
-            userDao.removeUser(userId);
-            return 1;
+            return userDao.removeUser(userId);
         }
 
         return -1;
