@@ -5,11 +5,11 @@ import java.util.UUID;
 public class User {
 
     private UUID userId;
-    private final String email;
-    private final String firstName;
-    private final String lastName;
-    private final Gender gender;
-    private final int age;
+    private String email;
+    private String firstName;
+    private String lastName;
+    private Gender gender;
+    private int age;
 
     public User(
         UUID userId, String email, String firstName, String lastName, Gender gender, int age
@@ -20,6 +20,9 @@ public class User {
         this.lastName = lastName;
         this.gender = gender;
         this.age = age;
+    }
+
+    public User() {
     }
 
     public UUID getId() {
