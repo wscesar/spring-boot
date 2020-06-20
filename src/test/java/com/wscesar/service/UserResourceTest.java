@@ -19,7 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-class UserServiceTest {
+class UserResourceTest {
 
     @Mock
     private FakeDataDao fakeData;
