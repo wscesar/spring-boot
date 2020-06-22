@@ -1,6 +1,8 @@
 package com.wscesar.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.OPTIONAL;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -19,7 +21,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-class UserResourceTest {
+class UserServiceTest {
 
     @Mock
     private FakeDataDao fakeData;
@@ -37,7 +39,7 @@ class UserResourceTest {
         UUID testId = UUID.randomUUID();
 
         User testUser = new User(
-            testId, "spring@email.com", "spring", "boot", Gender.MALE, 20
+            testId, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
         );
 
         ImmutableList<User> users =
@@ -47,7 +49,7 @@ class UserResourceTest {
 
         given(fakeData.getAllUsers()).willReturn(users);
 
-        List<User> allUsers = userService.getAllUsers();
+        List<User> allUsers = userService.getAllUsers(Optional.empty());
 
         testUser = allUsers.get(0);
 
@@ -58,11 +60,46 @@ class UserResourceTest {
     }
 
     @Test
+    void shouldThrowExceptionWhenGenderIsInvalid() {
+        assertThatThrownBy(() -> userService.getAllUsers(Optional.of("lgbtq+")))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("Invalid gender");
+
+    }
+
+    @Test
+    void shouldGetAllUsersByGender() {
+        UUID maleUserId = UUID.randomUUID();
+
+        User maleUser = new User(
+            maleUserId, "john@email.com", "john", "doe", Gender.MALE, 35
+        );
+
+        UUID femaleUserId = UUID.randomUUID();
+
+        User femaleUser = new User(
+            femaleUserId, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
+        );
+
+        ImmutableList<User> users =
+            new ImmutableList.Builder<User>()
+                .add(maleUser)
+                .add(femaleUser)
+                .build();
+
+        given(fakeData.getAllUsers()).willReturn(users);
+
+        List<User> filteredUsers = userService.getAllUsers(Optional.of("female"));
+        assertThat(filteredUsers).hasSize(1);
+        assertUserFields(filteredUsers.get(0));
+    }
+
+    @Test
     void shouldGetUser() {
         UUID testId = UUID.randomUUID();
 
         User testUser = new User(
-            testId, "spring@email.com", "spring", "boot", Gender.MALE, 20
+            testId, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
         );
 
         given(fakeData.getUser(testId)).willReturn(Optional.of(testUser));
@@ -80,7 +117,7 @@ class UserResourceTest {
     @Test
     void shouldInsertUser() {
         User testUser = new User(
-            null, "spring@email.com", "spring", "boot", Gender.MALE, 20
+            null, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
         );
 
         given(fakeData.insertUser(any(UUID.class), eq(testUser))).willReturn(1);
@@ -104,7 +141,7 @@ class UserResourceTest {
         UUID testId = UUID.randomUUID();
 
         User testUser = new User(
-            testId, "spring@email.com", "spring", "boot", Gender.MALE, 20
+            testId, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
         );
 
         given(fakeData.getUser(testId)).willReturn(Optional.of(testUser));
@@ -129,7 +166,7 @@ class UserResourceTest {
         UUID testId = UUID.randomUUID();
 
         User testUser = new User(
-            testId, "spring@email.com", "spring", "boot", Gender.MALE, 20
+            testId, "anna@email.com", "anna", "banana", Gender.FEMALE, 20
         );
 
         given(fakeData.getUser(testId)).willReturn(Optional.of(testUser));
@@ -146,9 +183,9 @@ class UserResourceTest {
     private void assertUserFields(User user) {
         assertThat(user.getId()).isNotNull();
         assertThat(user.getId()).isInstanceOf(UUID.class);
-        assertThat(user.getEmail()).isEqualTo("spring@email.com");
-        assertThat(user.getFirstName()).isEqualTo("spring");
-        assertThat(user.getLastName()).isEqualTo("boot");
+        assertThat(user.getEmail()).isEqualTo("anna@email.com");
+        assertThat(user.getFirstName()).isEqualTo("anna");
+        assertThat(user.getLastName()).isEqualTo("banana");
         assertThat(user.getAge()).isEqualTo(20);
     }
 }
