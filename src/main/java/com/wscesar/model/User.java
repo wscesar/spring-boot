@@ -1,18 +1,24 @@
 package com.wscesar.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.UUID;
 
 public class User {
 
-    private UUID userId;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private Gender gender;
-    private int age;
+    private final UUID userId;
+    private final String email;
+    private final String firstName;
+    private final String lastName;
+    private final Gender gender;
+    private final Integer age;
 
     public User(
-        UUID userId, String email, String firstName, String lastName, Gender gender, int age
+        @JsonProperty("userId") UUID userId,
+        @JsonProperty("email") String email,
+        @JsonProperty("firstName") String firstName,
+        @JsonProperty("lastName") String lastName,
+        @JsonProperty("gender") Gender gender,
+        @JsonProperty("age") int age
     ) {
         this.userId = userId;
         this.email = email;
@@ -22,19 +28,12 @@ public class User {
         this.age = age;
     }
 
-    public User() {
-    }
-
     public UUID getId() {
         return userId;
     }
 
     public String getEmail() {
         return email;
-    }
-
-    public void setUserId(UUID userId) {
-        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -51,6 +50,29 @@ public class User {
 
     public int getAge() {
         return age;
+    }
+
+    public static User newUser(UUID userId,User user) {
+        return new User(
+            userId,
+            user.getEmail(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getGender(),
+            user.getAge()
+        );
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+            "userId=" + userId +
+            ", email='" + email + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            ", gender=" + gender +
+            ", age=" + age +
+            '}';
     }
 
     public enum Gender {

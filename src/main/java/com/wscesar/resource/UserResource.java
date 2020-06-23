@@ -30,7 +30,8 @@ public class UserResource {
     }
 
     @RequestMapping(
-        method = RequestMethod.GET
+        method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     public List<User> fetchUsers(@QueryParam("gender") String gender) {
         return userService.getAllUsers(Optional.ofNullable(gender));
@@ -38,23 +39,24 @@ public class UserResource {
 
     @RequestMapping(
         method = RequestMethod.GET,
+        produces = MediaType.APPLICATION_JSON_VALUE,
         path = "{userId}"
     )
     public ResponseEntity<?> fetchUser(@PathVariable("userId") UUID userId) {
-        Optional<User> optionalUser = userService.getUser(userId);
-
-        if (optionalUser.isPresent()) {
-            return ResponseEntity.ok(optionalUser.get());
-        }
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(new ErrorMessage("User " + userId + " was not found on this server."));
+        return userService
+            .getUser(userId)
+            .<ResponseEntity<?>>map(ResponseEntity::ok)
+            .orElseGet(
+                () -> ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(new ErrorMessage("User " + userId + " was not found."))
+            );
     }
 
     @RequestMapping(
         method = RequestMethod.POST,
-        consumes = MediaType.APPLICATION_JSON_VALUE
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Integer> insertUser(@RequestBody User user) {
         int result = userService.insertUser(user);
@@ -63,7 +65,8 @@ public class UserResource {
 
     @RequestMapping(
         method = RequestMethod.PUT,
-        consumes = MediaType.APPLICATION_JSON_VALUE
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<Integer> updateUser(@RequestBody User user) {
         int result = userService.updateUser(user);
@@ -72,6 +75,7 @@ public class UserResource {
 
     @RequestMapping(
         method = RequestMethod.DELETE,
+        produces = MediaType.APPLICATION_JSON_VALUE,
         path = "{userId}"
     )
     public ResponseEntity<Integer> removeUser(@PathVariable("userId") UUID userId) {
