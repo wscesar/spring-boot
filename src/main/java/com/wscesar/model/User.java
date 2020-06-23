@@ -1,6 +1,8 @@
 package com.wscesar.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class User {
@@ -36,10 +38,12 @@ public class User {
         return email;
     }
 
+    @JsonIgnore
     public String getFirstName() {
         return firstName;
     }
 
+    @JsonIgnore
     public String getLastName() {
         return lastName;
     }
@@ -50,6 +54,10 @@ public class User {
 
     public int getAge() {
         return age;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     public static User newUser(UUID userId,User user) {
